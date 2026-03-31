@@ -42,7 +42,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tenant = self.context.get('tenant')
-        password = validated_data.get('password') or User.objects.make_random_password()
+        # Use a random string if no password is provided for internal users
+        from django.utils.crypto import get_random_string
+        password = validated_data.get('password') or get_random_string(12)
         user = User.objects.create_user(
             email=validated_data['email'],
             password=password,

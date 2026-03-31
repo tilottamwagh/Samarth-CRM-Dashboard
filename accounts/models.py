@@ -80,6 +80,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('admin', 'Admin'),
         ('manager', 'Manager'),
         ('employee', 'Employee'),
+        ('sales', 'Sales'),
+        ('support', 'Support'),
+        ('viewer', 'Viewer'),
     ]
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, null=True, blank=True, related_name='users')
     email = models.EmailField(unique=True)
