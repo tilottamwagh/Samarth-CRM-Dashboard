@@ -48,6 +48,7 @@ class MessageTemplate(models.Model):
     body = models.TextField()
     footer = models.CharField(max_length=60, blank=True)
     buttons = models.JSONField(default=list)
+    description = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     meta_template_id = models.CharField(max_length=50, blank=True)
     rejection_reason = models.TextField(blank=True)

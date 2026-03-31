@@ -46,6 +46,14 @@ export default function SettingsPage() {
     toast.success('Webhook test sent! Check your Meta dashboard.');
   };
 
+  const handleFBLogin = () => {
+    toast.loading('Connecting to Meta Business...', { duration: 2000 });
+    setTimeout(() => {
+      toast.success('Facebook authentication simulated! (Real OAuth requires App ID/Secret)');
+      // In a real prod app, you'd use FB.login() or redirect to FB OAuth URL
+    }, 2000);
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -70,121 +78,130 @@ export default function SettingsPage() {
 
       {/* WhatsApp Setup */}
       {activeTab === 'whatsapp' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
-          <div>
-            {/* Existing Configs */}
-            {waConfigs.length > 0 && (
-              <div className="card" style={{ marginBottom: 20 }}>
-                <div className="card-header"><div className="card-title">Connected Numbers</div></div>
-                {waConfigs.map(c => (
-                  <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderBottom: '1px solid var(--border-light)' }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(37,211,102,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Smartphone size={20} color="#25D366" />
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 700 }}>{c.display_name}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>ID: {c.phone_number_id}</div>
-                    </div>
-                    <span className="badge badge-green" style={{ marginLeft: 'auto' }}><CheckCircle size={10} /> Active</span>
+        <div className="fade-in">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+            <div>
+              {/* Onboarding Steps Header */}
+              <div className="card" style={{ marginBottom: 20, background: 'linear-gradient(135deg, rgba(37,211,102,0.1) 0%, rgba(108,92,231,0.05) 100%)', border: '1px solid rgba(37,211,102,0.2)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: 20 }}>
+                  <div style={{ width: 60, height: 60, borderRadius: '50%', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(37,211,102,0.3)' }}>
+                    <Smartphone size={32} color="white" />
                   </div>
-                ))}
-              </div>
-            )}
-
-            {/* Add New Config */}
-            <div className="card">
-              <div className="card-header"><div className="card-title">Add WhatsApp Business Number</div></div>
-              <div style={{ marginBottom: 20, padding: '14px 16px', background: 'rgba(116,185,255,0.1)', border: '1px solid rgba(116,185,255,0.2)', borderRadius: 10, fontSize: 13 }}>
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>📋 Setup Prerequisites:</div>
-                <ol style={{ paddingLeft: 20, color: 'var(--text-muted)', lineHeight: 2 }}>
-                  <li>A <strong>Facebook Business Account</strong> with WhatsApp Business API access</li>
-                  <li>An approved phone number in Meta Business Manager</li>
-                  <li>A permanent access token from Meta Developers portal</li>
-                </ol>
-                <a href="https://developers.facebook.com/docs/whatsapp/cloud-api/get-started" target="_blank" rel="noreferrer" style={{ color: 'var(--primary-light)', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 8 }}>
-                  Open Meta Setup Guide <ExternalLink size={12} />
-                </a>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Display Name</label>
-                  <input className="form-control" placeholder="e.g. Samarth Motors" value={waForm.display_name} onChange={e => setWa('display_name', e.target.value)} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Phone Number ID <span style={{ color: 'var(--danger)' }}>*</span></label>
-                  <div className="input-group">
-                    <Key size={14} className="input-icon" />
-                    <input className="form-control" placeholder="From Meta Developer Console" value={waForm.phone_number_id} onChange={e => setWa('phone_number_id', e.target.value)} />
+                  <div>
+                    <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>Link your WhatsApp Cloud API</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Connect your Meta Business account to start broadcasting campaigns.</p>
                   </div>
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">WhatsApp Business Account ID</label>
-                  <input className="form-control" placeholder="WABA ID" value={waForm.wa_business_id} onChange={e => setWa('wa_business_id', e.target.value)} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Verify Token</label>
-                  <input className="form-control" placeholder="Custom verify token (any string)" value={waForm.verify_token} onChange={e => setWa('verify_token', e.target.value)} />
-                </div>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Permanent Access Token <span style={{ color: 'var(--danger)' }}>*</span></label>
-                <textarea className="form-control" rows={3} placeholder="EAABs... (long token from Meta)" value={waForm.access_token} onChange={e => setWa('access_token', e.target.value)} style={{ resize: 'none', fontFamily: 'monospace', fontSize: 12 }} />
-              </div>
-
-              <button className="btn btn-primary" onClick={saveWhatsApp} disabled={saving} style={{ marginTop: 4 }}>
-                {saving ? <><div className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Saving...</> : <><Smartphone size={14} /> Connect WhatsApp</>}
-              </button>
-            </div>
-          </div>
-
-          {/* Webhook Info Panel */}
-          <div>
-            <div className="card" style={{ marginBottom: 16 }}>
-              <div className="card-header"><div className="card-title">Webhook Configuration</div></div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
-                Add this webhook URL in your Meta App Dashboard to receive WhatsApp messages.
-              </div>
-              <div style={{ marginBottom: 12 }}>
-                <div className="form-label">Webhook URL</div>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  <div style={{ flex: 1, padding: '8px 12px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontSize: 11, fontFamily: 'monospace', wordBreak: 'break-all', color: 'var(--primary-light)' }}>
-                    {WEBHOOK_URL}
-                  </div>
-                  <button className="btn btn-secondary btn-icon" onClick={() => copyToClipboard(WEBHOOK_URL)} title="Copy">
-                    <Copy size={14} />
+                  <button className="btn btn-primary" onClick={handleFBLogin} style={{ marginLeft: 'auto', background: '#1877F2', borderColor: '#1877F2', padding: '12px 24px' }}>
+                    <span style={{ marginRight: 8 }}>f</span> Login with Facebook
                   </button>
                 </div>
               </div>
-              <div className="form-group">
-                <div className="form-label">Subscribed Fields</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {['messages', 'message_deliveries', 'message_reads'].map(f => (
-                    <span key={f} className="badge badge-purple">{f}</span>
-                  ))}
-                </div>
-              </div>
-              <button className="btn btn-secondary btn-sm" style={{ width: '100%', justifyContent: 'center' }} onClick={testWebhook}>
-                <TestTube size={13} /> Test Webhook
-              </button>
-            </div>
 
-            <div className="card">
-              <div className="card-header"><div className="card-title">WhatsApp Status</div></div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* 6 Steps Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
                 {[
-                  { label: 'Numbers Connected', value: waConfigs.length, ok: waConfigs.length > 0 },
-                  { label: 'Webhook Active', value: waConfigs.length > 0 ? 'Yes' : 'No', ok: waConfigs.length > 0 },
-                  { label: 'API Version', value: 'v18.0', ok: true },
+                  { step: '01', title: 'Create App', desc: 'Go to Meta for Developers and create a new App.' },
+                  { step: '02', title: 'Setup WhatsApp', desc: 'Add the WhatsApp product to your Meta App.' },
+                  { step: '03', title: 'Add Number', desc: 'Register your business phone number in the dashboard.' },
+                  { step: '04', title: 'Generate Token', desc: 'Create a permanent System User access token.' },
+                  { step: '05', title: 'Copy IDs', desc: 'Copy your Phone Number ID and WABA ID below.' },
+                  { step: '06', title: 'Configure Webhook', desc: 'Paste our Webhook URL into your Meta App settings.' },
                 ].map((s, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-light)' }}>
-                    <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{s.label}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: s.ok ? 'var(--success)' : 'var(--danger)' }}>{s.value}</span>
+                  <div key={i} className="card" style={{ padding: '20px', display: 'flex', gap: 15, alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: 24, fontWeight: 900, color: 'rgba(0,0,0,0.05)', lineHeight: 1 }}>{s.step}</div>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{s.title}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>{s.desc}</div>
+                    </div>
                   </div>
                 ))}
               </div>
+
+              {/* OR Divider */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 15, margin: '30px 0' }}>
+                <div style={{ flex: 1, height: 1, background: 'var(--border-light)' }}></div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '1px' }}>OR MANUALLY ENTER DETAILS</div>
+                <div style={{ flex: 1, height: 1, background: 'var(--border-light)' }}></div>
+              </div>
+
+              {/* Add New Config Form */}
+              <div className="card">
+                <div className="card-header"><div className="card-title">Enter API Credentials</div></div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Display Name</label>
+                    <input className="form-control" placeholder="e.g. Samarth Motors" value={waForm.display_name} onChange={e => setWa('display_name', e.target.value)} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Phone Number ID <span style={{ color: 'var(--danger)' }}>*</span></label>
+                    <div className="input-group">
+                      <Key size={14} className="input-icon" />
+                      <input className="form-control" placeholder="From Meta Developer Console" value={waForm.phone_number_id} onChange={e => setWa('phone_number_id', e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">WhatsApp Business Account ID</label>
+                    <input className="form-control" placeholder="WABA ID" value={waForm.wa_business_id} onChange={e => setWa('wa_business_id', e.target.value)} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Verify Token</label>
+                    <input className="form-control" placeholder="Custom verify token (any string)" value={waForm.verify_token} onChange={e => setWa('verify_token', e.target.value)} />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Permanent Access Token <span style={{ color: 'var(--danger)' }}>*</span></label>
+                  <textarea className="form-control" rows={3} placeholder="EAABs... (long token from Meta)" value={waForm.access_token} onChange={e => setWa('access_token', e.target.value)} style={{ resize: 'none', fontFamily: 'monospace', fontSize: 12 }} />
+                </div>
+                <button className="btn btn-primary" onClick={saveWhatsApp} disabled={saving} style={{ marginTop: 4, padding: '10px 24px' }}>
+                  {saving ? <><div className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Saving...</> : <><Smartphone size={14} /> Connect WhatsApp</>}
+                </button>
+              </div>
+            </div>
+
+            {/* Side Panel: Webhook & Status */}
+            <div>
+              <div className="card" style={{ marginBottom: 16 }}>
+                <div className="card-header"><div className="card-title">Webhook URL</div></div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
+                  Add this URL in your Meta App Dashboard.
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <div style={{ flex: 1, padding: '8px 12px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontSize: 11, fontFamily: 'monospace', wordBreak: 'break-all', color: 'var(--primary-light)' }}>
+                      {WEBHOOK_URL}
+                    </div>
+                    <button className="btn btn-secondary btn-icon" onClick={() => copyToClipboard(WEBHOOK_URL)} title="Copy">
+                      <Copy size={14} />
+                    </button>
+                  </div>
+                </div>
+                <button className="btn btn-secondary btn-sm" style={{ width: '100%', justifyContent: 'center' }} onClick={testWebhook}>
+                  <TestTube size={13} /> Test Webhook
+                </button>
+              </div>
+
+              {/* Connected Numbers */}
+              {waConfigs.length > 0 && (
+                <div className="card">
+                  <div className="card-header"><div className="card-title">Connected Numbers</div></div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {waConfigs.map(c => (
+                      <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border-light)' }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(37,211,102,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Smartphone size={16} color="#25D366" />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 700, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.display_name}</div>
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>ID: {c.phone_number_id}</div>
+                        </div>
+                        <span className="badge badge-green"><CheckCircle size={8} /> OK</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

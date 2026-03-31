@@ -33,6 +33,10 @@ import CreateQuotation from './pages/CreateQuotation';
 import Quotations from './pages/Quotations';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import TeamSummary from './pages/TeamSummary';
+import LearningLibrary from './pages/LearningLibrary';
+import ProductCatalog from './pages/ProductCatalog';
+import MyCopilots from './pages/MyCopilots';
 
 // Placeholder for not-yet-fully-built pages
 const Placeholder = ({ title, emoji = '🚧' }) => (
@@ -103,11 +107,12 @@ export default function App() {
               <Route path="reports/pipeline" element={<Pipeline />} />
               <Route path="reports/sentiment" element={<SentimentAnalysis />} />
               <Route path="reports/sales" element={<SalesPerformance />} />
-              <Route path="reports/team" element={<SalesPerformance />} />
+              <Route path="reports/team" element={<TeamSummary />} />
               <Route path="reports/actions" element={<ActionList />} />
               <Route path="reports/tickets" element={<ServiceTickets />} />
               <Route path="reports/call-later" element={<CallLaterLeads />} />
               <Route path="reports/re-engaged" element={<ReEngaged />} />
+              <Route path="reports/campaign" element={<CampaignReport />} />
 
               {/* Marketing */}
               <Route path="marketing/campaigns" element={<CampaignWizard />} />
@@ -132,14 +137,16 @@ export default function App() {
               <Route path="users/list" element={<UserManagement />} />
 
               {/* Learning Videos */}
-              <Route path="learning/crm-basics" element={<Placeholder title="CRM Basics" emoji="🎓" />} />
-              <Route path="learning/whatsapp-setup" element={<Placeholder title="WhatsApp Setup Guide" emoji="📱" />} />
-              <Route path="learning/campaigns" element={<Placeholder title="Campaigns Guide" emoji="📢" />} />
-              <Route path="learning/reports" element={<Placeholder title="Reports Guide" emoji="📊" />} />
+              <Route path="learning" element={<LearningLibrary />} />
+              <Route path="learning/tutorials" element={<LearningLibrary />} />
+              <Route path="learning/crm-basics" element={<LearningLibrary />} />
+              <Route path="learning/whatsapp-setup" element={<LearningLibrary />} />
+              <Route path="learning/campaigns" element={<LearningLibrary />} />
+              <Route path="learning/reports" element={<LearningLibrary />} />
 
               {/* Etc */}
-              <Route path="copilots" element={<Placeholder title="My Copilots" emoji="🤖" />} />
-              <Route path="ecomm/products" element={<Placeholder title="AI-Powered Ecommerce" emoji="🛒" />} />
+              <Route path="copilots" element={<MyCopilots />} />
+              <Route path="ecomm/products" element={<ProductCatalog />} />
               <Route path="settings" element={<Settings />} />
               <Route path="settings/whatsapp" element={<Settings />} />
               <Route path="profile" element={<Profile />} />

@@ -15,7 +15,7 @@ const navConfig = [
   { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/copilots', icon: Bot, label: 'My Copilots' },
 
-  { type: 'label', label: 'REPORTS' },
+  { type: 'label', label: 'GENERAL' },
   {
     icon: BarChart2, label: 'My Reports', children: [
       { path: '/reports/sales', icon: TrendingUp, label: 'Sales Performance' },
@@ -29,14 +29,13 @@ const navConfig = [
       { path: '/reports/re-engaged', icon: RotateCcw, label: 'Re-engaged' },
     ]
   },
-
-  { type: 'label', label: 'SALES' },
   {
     icon: FileText, label: 'Quotation Tool', children: [
       { path: '/quotations/create', icon: FileText, label: 'Create Quotation' },
       { path: '/quotations', icon: List, label: 'Quotation List' },
     ]
   },
+  { path: '/reports/campaign', icon: BarChart, label: 'Analytics' },
 
   { type: 'label', label: 'MARKETING' },
   {
@@ -52,12 +51,14 @@ const navConfig = [
     ]
   },
 
-  { type: 'label', label: 'SETUP' },
+  { type: 'label', label: 'AI-POWERED ECOMM' },
   {
-    icon: ShoppingCart, label: 'AI-Powered Ecomm', children: [
+    icon: ShoppingCart, label: 'AI-powered Ecomm', children: [
       { path: '/ecomm/products', icon: ShoppingCart, label: 'Products' },
     ]
   },
+
+  { type: 'label', label: 'MASTER DATA' },
   {
     icon: Users, label: 'Master Data', children: [
       { path: '/leads/create', icon: UserPlus, label: 'Create single Lead' },
@@ -72,6 +73,7 @@ const navConfig = [
   { type: 'label', label: 'LEARNING' },
   {
     icon: PlayCircle, label: 'Learning Videos', children: [
+      { path: '/learning/tutorials', icon: PlayCircle, label: 'Tutorials' },
       { path: '/learning/crm-basics', icon: PlayCircle, label: 'CRM Basics' },
       { path: '/learning/whatsapp-setup', icon: PlayCircle, label: 'WhatsApp Setup' },
       { path: '/learning/campaigns', icon: PlayCircle, label: 'Campaigns Guide' },
@@ -88,7 +90,7 @@ export default function Sidebar() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const [openMenus, setOpenMenus] = useState({ 'My Reports': true });
+  const [openMenus, setOpenMenus] = useState({});
 
   const toggleMenu = (label, currentlyOpen) => {
     setOpenMenus(prev => ({ ...prev, [label]: !currentlyOpen }));

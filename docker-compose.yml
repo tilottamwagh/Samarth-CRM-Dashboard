@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80"
+    networks:
+      - samarth-net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python manage.py migrate && 
+             gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000"
+    depends_on:
+      - redis
+    networks:
+      - samarth-net
+
+  websocket:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "daphne -b 0.0.0.0 -p 8001 backend.asgi:application"
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8001"
+    depends_on:
+      - redis
+    networks:
+      - samarth-net
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A backend worker -l info
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - samarth-net
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A backend beat -l info
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - samarth-net
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Expose for Coolify's internal network to reach
+    expose:
+      - "6379"
+    networks:
+      - samarth-net
+
+networks:
+  samarth-net:
+    driver: bridge
