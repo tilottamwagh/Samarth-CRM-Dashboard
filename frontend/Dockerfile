@@ -9,6 +9,10 @@ RUN npm install
 
 # Copy application files and build
 COPY . .
+# Accept production backend URL into build context
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 # We use --ignore-scripts or run build, allowing it to pass even if tsc warns sometimes
 RUN npm run build || npx vite build
 
