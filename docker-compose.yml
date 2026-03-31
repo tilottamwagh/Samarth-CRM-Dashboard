@@ -23,6 +23,8 @@ services:
       - .env
     ports:
       - "8000"
+    dns:
+      - 8.8.8.8
     depends_on:
       - redis
     networks:
@@ -56,6 +58,8 @@ services:
       - redis
     networks:
       - samarth-net
+    dns:
+      - 8.8.8.8
 
   celery-beat:
     build:
@@ -69,6 +73,8 @@ services:
       - redis
     networks:
       - samarth-net
+    dns:
+      - 8.8.8.8
 
   redis:
     image: redis:7-alpine

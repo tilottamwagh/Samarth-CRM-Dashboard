@@ -60,4 +60,4 @@ drop_tables.py
 list_tables.py
 verify_tables.py
 seed_data.py
-create_sales_user.py
+
