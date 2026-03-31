@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = User
@@ -42,9 +42,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tenant = self.context.get('tenant')
+        password = validated_data.get('password') or User.objects.make_random_password()
         user = User.objects.create_user(
             email=validated_data['email'],
-            password=validated_data['password'],
+            password=password,
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
             mobile=validated_data.get('mobile', ''),

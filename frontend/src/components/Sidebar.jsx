@@ -90,8 +90,8 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [openMenus, setOpenMenus] = useState({ 'My Reports': true });
 
-  const toggleMenu = (label) => {
-    setOpenMenus(prev => ({ ...prev, [label]: !prev[label] }));
+  const toggleMenu = (label, currentlyOpen) => {
+    setOpenMenus(prev => ({ ...prev, [label]: !currentlyOpen }));
   };
 
   const isChildActive = (children) =>
@@ -128,7 +128,7 @@ export default function Sidebar() {
               <div key={i}>
                 <div
                   className={`nav-item ${isChildActive(item.children) ? 'active' : ''}`}
-                  onClick={() => toggleMenu(item.label)}
+                  onClick={() => toggleMenu(item.label, isOpen)}
                 >
                   <span className="nav-icon"><item.icon size={17} /></span>
                   {item.label}

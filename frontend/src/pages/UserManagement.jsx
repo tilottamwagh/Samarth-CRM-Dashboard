@@ -13,8 +13,7 @@ export default function UserManagement() {
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [showPass, setShowPass] = useState(false);
-  const [form, setForm] = useState({ first_name: '', last_name: '', email: '', mobile: '', role: 'sales', password: '', is_active: true });
+  const [form, setForm] = useState({ first_name: '', last_name: '', email: '', mobile: '', role: 'sales', is_active: true });
 
   useEffect(() => { fetchUsers(); }, []);
 
@@ -27,15 +26,13 @@ export default function UserManagement() {
     finally { setLoading(false); }
   };
 
-  const reset = () => { setForm({ first_name: '', last_name: '', email: '', mobile: '', role: 'sales', password: '', is_active: true }); setEditingId(null); };
+  const reset = () => { setForm({ first_name: '', last_name: '', email: '', mobile: '', role: 'sales', is_active: true }); setEditingId(null); };
 
   const handleSave = async () => {
     if (!form.email) return toast.error('Email is required');
-    if (!editingId && !form.password) return toast.error('Password is required for new users');
     setSaving(true);
     try {
       const payload = { ...form };
-      if (editingId && !payload.password) delete payload.password;
       if (editingId) {
         await api.patch(`/leads/users/${editingId}/`, payload);
         toast.success('User updated!');
@@ -48,7 +45,7 @@ export default function UserManagement() {
     finally { setSaving(false); }
   };
 
-  const handleEdit = (u) => { setForm({ first_name: u.first_name, last_name: u.last_name, email: u.email, mobile: u.mobile || '', role: u.role || 'sales', password: '', is_active: u.is_active }); setEditingId(u.id); setTab('create'); };
+  const handleEdit = (u) => { setForm({ first_name: u.first_name, last_name: u.last_name, email: u.email, mobile: u.mobile || '', role: u.role || 'sales', is_active: u.is_active }); setEditingId(u.id); setTab('create'); };
 
   const toggleActive = async (u) => {
     try {
@@ -116,15 +113,6 @@ export default function UserManagement() {
               <select className="form-control" value={form.role} onChange={e => set('role', e.target.value)}>
                 {ROLES.map(r => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
               </select>
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Password {editingId && <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>(leave blank to keep current)</span>} {!editingId && <span style={{ color: 'var(--danger)' }}>*</span>}</label>
-            <div style={{ position: 'relative' }}>
-              <input className="form-control" type={showPass ? 'text' : 'password'} placeholder={editingId ? 'Enter new password to change' : 'Min 8 characters'} value={form.password} onChange={e => set('password', e.target.value)} style={{ paddingRight: 40 }} />
-              <button type="button" onClick={() => setShowPass(s => !s)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
-                {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
-              </button>
             </div>
           </div>
           <div className="form-group">
