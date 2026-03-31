@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual Environments
+venv/
+env/
+.venv/
+.env/
+
+# Environment variables — NEVER commit secrets
+.env
+*.local
+
+# Django
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+static/
+
+# Logs
+*.log
+logs/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Test
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Temporary scripts (restore/debug)
+restore_all.py
+restore_original_tables.py
+drop_tables.py
+list_tables.py
+verify_tables.py
+seed_data.py
