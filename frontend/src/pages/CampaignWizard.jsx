@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle, Upload, Send, Calendar, MessageSquare, Eye } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Upload, Send, Calendar, MessageSquare, Download, HelpCircle } from 'lucide-react';
 import api from '../api';
 import toast from 'react-hot-toast';
 
-const STEPS = ['Sender Setup', 'Select Template', 'Upload Recipients', 'Review & Launch'];
+const STEPS = ['Sender', 'Template', 'Upload Excel File', 'Review'];
 
 export default function CampaignWizard() {
   const [step, setStep] = useState(0);
@@ -54,7 +54,39 @@ export default function CampaignWizard() {
       <div className="page-header">
         <div className="page-header-left">
           <h1>Initiate Connect</h1>
-          <p>Launch bulk WhatsApp campaigns in 4 simple steps</p>
+          <p>Initiate smart connect over WhatsApp</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* Download Excel Template button — matches Vaayushop exactly */}
+          <a
+            href="data:application/vnd.ms-excel;base64,"
+            download="campaign_recipients_template.xlsx"
+            onClick={(e) => {
+              e.preventDefault();
+              // Generate a proper CSV template
+              const csv = 'Name,Mobile,Variable1,Variable2,Variable3\nJohn Doe,9876543210,Hello,Offer,Link\n';
+              const blob = new Blob([csv], { type: 'text/csv' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = 'campaign_recipients_template.csv';
+              a.click(); URL.revokeObjectURL(url);
+            }}
+            className="btn btn-primary"
+            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+          >
+            <Download size={14} /> Download Excel Template
+            <span title="Column A=Name, B=Mobile, C+ = Template variables" style={{ cursor: 'help', opacity: 0.8 }}>
+              <HelpCircle size={13} />
+            </span>
+          </a>
+          {/* Daily Message Limit badge */}
+          <div style={{
+            padding: '6px 14px', background: 'rgba(116,185,255,0.15)',
+            border: '1px solid rgba(116,185,255,0.3)', borderRadius: 20,
+            fontSize: 12, fontWeight: 700, color: 'var(--info)', whiteSpace: 'nowrap'
+          }}>
+            Daily Message Limit: 1000
+          </div>
         </div>
       </div>
 

@@ -14,6 +14,10 @@ import SearchLeads from './pages/SearchLeads';
 import Conversations from './pages/Conversations';
 import CampaignWizard from './pages/CampaignWizard';
 import Campaigns from './pages/Campaigns';
+import CampaignReport from './pages/CampaignReport';
+import TemplateStudio from './pages/TemplateStudio';
+import EngagementList from './pages/EngagementList';
+import CreateContacts from './pages/CreateContacts';
 import Pipeline from './pages/Pipeline';
 import SentimentAnalysis from './pages/SentimentAnalysis';
 import SalesPerformance from './pages/SalesPerformance';
@@ -22,6 +26,8 @@ import CallLaterLeads from './pages/CallLaterLeads';
 import ServiceTickets from './pages/ServiceTickets';
 import ReEngaged from './pages/ReEngaged';
 import Employees from './pages/Employees';
+import Dealers from './pages/Dealers';
+import UserManagement from './pages/UserManagement';
 import Billing from './pages/Billing';
 import CreateQuotation from './pages/CreateQuotation';
 import Quotations from './pages/Quotations';
@@ -105,8 +111,12 @@ export default function App() {
               {/* Marketing */}
               <Route path="marketing/campaigns" element={<CampaignWizard />} />
               <Route path="marketing/campaign-list" element={<Campaigns />} />
-              <Route path="marketing/templates" element={<Placeholder title="Template Studio" emoji="📋" />} />
-              <Route path="marketing/reports" element={<Placeholder title="Campaign Reports" emoji="📈" />} />
+              <Route path="marketing/report" element={<CampaignReport />} />
+              <Route path="marketing/reports" element={<CampaignReport />} />
+              <Route path="marketing/engagement" element={<EngagementList />} />
+              <Route path="marketing/contacts" element={<CreateContacts />} />
+              <Route path="marketing/templates" element={<TemplateStudio />} />
+              <Route path="marketing/template-list" element={<Placeholder title="Template List" emoji="📋" />} />
 
               {/* Quotations */}
               <Route path="quotations" element={<Quotations />} />
@@ -114,7 +124,17 @@ export default function App() {
 
               {/* Master Data */}
               <Route path="employees" element={<Employees />} />
-              <Route path="dealers" element={<Placeholder title="Dealers" emoji="🤝" />} />
+              <Route path="dealers" element={<Dealers />} />
+              <Route path="dealers/create" element={<Dealers />} />
+              <Route path="dealers/list" element={<Dealers />} />
+              <Route path="users/create" element={<UserManagement />} />
+              <Route path="users/list" element={<UserManagement />} />
+
+              {/* Learning Videos */}
+              <Route path="learning/crm-basics" element={<Placeholder title="CRM Basics" emoji="🎓" />} />
+              <Route path="learning/whatsapp-setup" element={<Placeholder title="WhatsApp Setup Guide" emoji="📱" />} />
+              <Route path="learning/campaigns" element={<Placeholder title="Campaigns Guide" emoji="📢" />} />
+              <Route path="learning/reports" element={<Placeholder title="Reports Guide" emoji="📊" />} />
 
               {/* Etc */}
               <Route path="copilots" element={<Placeholder title="My Copilots" emoji="🤖" />} />

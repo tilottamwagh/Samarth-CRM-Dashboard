@@ -6,7 +6,8 @@ import {
   LayoutDashboard, Users, MessageSquare, BarChart2, Megaphone,
   FileText, Settings, LogOut, ChevronRight, Zap, Moon, Sun,
   ShoppingCart, BookOpen, CreditCard, Bot, Target, Bell, Search,
-  TrendingUp, UserCheck, Ticket, Phone, RotateCcw, List
+  TrendingUp, UserCheck, Ticket, Phone, RotateCcw, List,
+  Send, Layers, UserPlus, Plug, BarChart, Building, PlayCircle, UserCog
 } from 'lucide-react';
 
 const navConfig = [
@@ -40,12 +41,16 @@ const navConfig = [
   { type: 'label', label: 'MARKETING' },
   {
     icon: Megaphone, label: 'Marketing', children: [
-      { path: '/marketing/campaigns', icon: Megaphone, label: 'Initiate Connect' },
-      { path: '/marketing/reports', icon: BarChart2, label: 'Campaign Report' },
-      { path: '/marketing/templates', icon: FileText, label: 'Template Studio' },
+      { path: '/marketing/campaigns', icon: Send, label: 'Initiate Connect' },
+      { path: '/marketing/report', icon: BarChart, label: 'Campaign Report' },
+      { path: '/marketing/engagement', icon: Layers, label: 'Engagement List' },
+      { path: '/conversations', icon: MessageSquare, label: 'My Conversations' },
+      { path: '/marketing/contacts', icon: UserPlus, label: 'Create Contacts' },
+      { path: '/marketing/templates', icon: FileText, label: 'Template Studio(Beta)' },
+      { path: '/marketing/template-list', icon: List, label: 'Template List' },
+      { path: '/settings', icon: Plug, label: 'WhatsApp Plugin' },
     ]
   },
-  { path: '/conversations', icon: MessageSquare, label: 'My Conversations' },
 
   { type: 'label', label: 'SETUP' },
   {
@@ -55,12 +60,25 @@ const navConfig = [
   },
   {
     icon: Users, label: 'Master Data', children: [
-      { path: '/leads/create', icon: Users, label: 'Create Lead' },
-      { path: '/leads/upload', icon: Users, label: 'Upload Leads' },
-      { path: '/employees', icon: Users, label: 'Employees' },
-      { path: '/dealers', icon: Users, label: 'Dealers' },
+      { path: '/leads/create', icon: UserPlus, label: 'Create single Lead' },
+      { path: '/leads/upload', icon: Users, label: 'Upload Mass leads' },
+      { path: '/dealers/create', icon: Building, label: 'Create Dealer' },
+      { path: '/dealers/list', icon: Building, label: 'Dealer List' },
+      { path: '/users/create', icon: UserCog, label: 'Create User' },
+      { path: '/users/list', icon: UserCog, label: 'User List' },
     ]
   },
+
+  { type: 'label', label: 'LEARNING' },
+  {
+    icon: PlayCircle, label: 'Learning Videos', children: [
+      { path: '/learning/crm-basics', icon: PlayCircle, label: 'CRM Basics' },
+      { path: '/learning/whatsapp-setup', icon: PlayCircle, label: 'WhatsApp Setup' },
+      { path: '/learning/campaigns', icon: PlayCircle, label: 'Campaigns Guide' },
+      { path: '/learning/reports', icon: PlayCircle, label: 'Reports Guide' },
+    ]
+  },
+
   { path: '/settings', icon: Settings, label: 'Settings' },
   { path: '/billing', icon: CreditCard, label: 'My Billing' },
 ];
