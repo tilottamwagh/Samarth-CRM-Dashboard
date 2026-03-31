@@ -175,3 +175,12 @@ class ServiceTicketListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(tenant=self.request.user.tenant)
+
+
+class RecentActivityView(generics.ListAPIView):
+    serializer_class = LeadActivitySerializer
+
+    def get_queryset(self):
+        return LeadActivity.objects.filter(
+            lead__tenant=self.request.user.tenant
+        ).order_by('-created_at')[:10]

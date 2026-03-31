@@ -32,6 +32,7 @@ import Billing from './pages/Billing';
 import CreateQuotation from './pages/CreateQuotation';
 import Quotations from './pages/Quotations';
 import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 
 // Placeholder for not-yet-fully-built pages
 const Placeholder = ({ title, emoji = '🚧' }) => (
@@ -141,6 +142,7 @@ export default function App() {
               <Route path="ecomm/products" element={<Placeholder title="AI-Powered Ecommerce" emoji="🛒" />} />
               <Route path="settings" element={<Settings />} />
               <Route path="settings/whatsapp" element={<Settings />} />
+              <Route path="profile" element={<Profile />} />
               <Route path="billing" element={<Billing />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

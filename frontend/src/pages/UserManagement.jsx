@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Search, ShieldCheck, ShieldOff, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import api from '../api';
 import toast from 'react-hot-toast';
 
@@ -7,6 +8,7 @@ const ROLES = ['admin', 'manager', 'sales', 'support', 'viewer'];
 const ROLE_BADGE = { admin: 'badge-red', manager: 'badge-purple', sales: 'badge-green', support: 'badge-blue', viewer: 'badge-gray' };
 
 export default function UserManagement() {
+  const { user: currentUser } = useAuth();
   const [tab, setTab] = useState('list');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +23,9 @@ export default function UserManagement() {
     setLoading(true);
     try {
       const { data } = await api.get('/leads/users/');
-      setUsers(data.results || data);
+      const allUsers = data.results || data;
+      // Filter out the current logged-in user
+      setUsers(allUsers.filter(u => u.id !== currentUser?.id));
     } catch { setUsers([]); }
     finally { setLoading(false); }
   };

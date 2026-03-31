@@ -142,3 +142,25 @@ class SalesTargetView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(tenant=self.request.user.tenant)
+@api_view(['PATCH'])
+def update_profile(request):
+    user = request.user
+    data = request.data
+
+    # Update User fields
+    user.first_name = data.get('first_name', user.first_name)
+    user.last_name = data.get('last_name', user.last_name)
+    user.mobile = data.get('mobile', user.mobile)
+    user.save()
+
+    # Update Tenant fields if user is admin/superadmin
+    if user.role in ['admin', 'superadmin'] and user.tenant:
+        tenant = user.tenant
+        tenant.name = data.get('business_name', tenant.name)
+        tenant.industry = data.get('industry', tenant.industry)
+        tenant.gst_number = data.get('gst_number', tenant.gst_number)
+        tenant.website = data.get('website', tenant.website)
+        tenant.address = data.get('address', tenant.address)
+        tenant.save()
+
+    return Response(UserSerializer(user).data)

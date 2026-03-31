@@ -34,10 +34,18 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    try {
+      const { data } = await api.get('/auth/me/');
+      setUser(data);
+      return data;
+    } catch { return null; }
+  };
+
   const updateUser = (u) => setUser(u);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateUser, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

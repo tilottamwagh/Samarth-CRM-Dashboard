@@ -14,6 +14,6 @@ urlpatterns = [
     # Dealers
     path('dealers/', views.DealerListCreateView.as_view(), name='dealers'),
     path('dealers/<int:pk>/', views.DealerDetailView.as_view(), name='dealer-detail'),
-    # Sales Targets
-    path('sales-targets/', views.SalesTargetView.as_view(), name='sales-targets'),
+    # Profile Update
+    path('update-profile/', views.update_profile, name='update-profile'),
 ]

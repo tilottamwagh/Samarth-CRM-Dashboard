@@ -17,7 +17,7 @@ class TenantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tenant
-        fields = ['id', 'name', 'slug', 'email', 'mobile', 'industry', 'logo', 'plan', 'ai_queries_used', 'queries_left', 'is_active', 'created_at']
+        fields = ['id', 'name', 'slug', 'email', 'mobile', 'industry', 'logo', 'plan', 'gst_number', 'website', 'address', 'ai_queries_used', 'queries_left', 'is_active', 'created_at']
 
 
 class UserSerializer(serializers.ModelSerializer):

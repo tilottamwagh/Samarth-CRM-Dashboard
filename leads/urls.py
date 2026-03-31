@@ -22,4 +22,5 @@ urlpatterns = [
     # Dealer Management (proxied from accounts)
     path('dealers/', DealerListCreateView.as_view(), name='dealers'),
     path('dealers/<int:pk>/', DealerDetailView.as_view(), name='dealer-detail'),
+    path('recent-activity/', views.RecentActivityView.as_view(), name='recent-activity'),
 ]
