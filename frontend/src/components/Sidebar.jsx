@@ -121,7 +121,9 @@ export default function Sidebar() {
           }
 
           if (item.children) {
-            const isOpen = openMenus[item.label] || isChildActive(item.children);
+            // If the user hasn't manually toggled this menu yet, it should be open if a child is active.
+            // Otherwise, respect the user's manual toggle (openMenus[item.label]).
+            const isOpen = openMenus[item.label] ?? isChildActive(item.children);
             return (
               <div key={i}>
                 <div
