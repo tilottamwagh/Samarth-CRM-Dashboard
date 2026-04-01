@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
 from django.utils import timezone
-from .models import Tenant, Plan, Dealer, SalesTarget
+from .models import Tenant, Plan, Dealer, SalesTarget, Employee
 from .serializers import (
     UserSerializer, UserCreateSerializer, LoginSerializer,
-    TenantSerializer, DealerSerializer, SalesTargetSerializer
+    TenantSerializer, DealerSerializer, SalesTargetSerializer,
+    EmployeeSerializer, EmployeeCreateSerializer
 )
 
 User = get_user_model()
@@ -98,23 +99,23 @@ def logout_view(request):
 
 
 class EmployeeListCreateView(generics.ListCreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = EmployeeSerializer
 
     def get_queryset(self):
-        return User.objects.filter(tenant=self.request.user.tenant).exclude(role='superadmin')
+        return Employee.objects.filter(tenant=self.request.user.tenant)
 
     def create(self, request, *args, **kwargs):
-        serializer = UserCreateSerializer(data=request.data, context={'tenant': request.user.tenant})
+        serializer = EmployeeCreateSerializer(data=request.data, context={'tenant': request.user.tenant})
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        employee = serializer.save()
+        return Response(EmployeeSerializer(employee).data, status=status.HTTP_201_CREATED)
 
 
 class EmployeeDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = UserSerializer
+    serializer_class = EmployeeSerializer
 
     def get_queryset(self):
-        return User.objects.filter(tenant=self.request.user.tenant)
+        return Employee.objects.filter(tenant=self.request.user.tenant)
 
 
 class DealerListCreateView(generics.ListCreateAPIView):

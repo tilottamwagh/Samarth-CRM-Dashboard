@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, Zap, Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -145,7 +145,7 @@ export default function Login() {
           </form>
 
           <div className="auth-footer">
-            Don't have an account? <a href="/register">Get started free</a>
+            Don't have an account? <Link to="/register">Get started free</Link>
           </div>
         </div>
       </div>

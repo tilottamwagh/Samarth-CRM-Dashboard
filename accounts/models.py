@@ -114,9 +114,31 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'users'
 
 
+class Employee(models.Model):
+    """Internal staff to whom work is assigned (cannot log in)"""
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='employees')
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    mobile = models.CharField(max_length=15, blank=True)
+    role = models.CharField(max_length=20, default='sales')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
+
+    class Meta:
+        db_table = 'employees'
+
+
 class SalesTarget(models.Model):
     """Monthly sales targets for employees"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales_targets')
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='sales_targets')
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     target_amount = models.DecimalField(max_digits=12, decimal_places=2)
     achieved_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -126,7 +148,7 @@ class SalesTarget(models.Model):
 
     class Meta:
         db_table = 'sales_targets'
-        unique_together = ['user', 'month', 'year']
+        unique_together = ['employee', 'month', 'year']
 
 
 class Dealer(models.Model):

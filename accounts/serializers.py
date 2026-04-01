@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Tenant, Plan, SalesTarget, Dealer
+from .models import Tenant, Plan, SalesTarget, Dealer, Employee
 
 User = get_user_model()
 
@@ -55,6 +55,24 @@ class UserCreateSerializer(serializers.ModelSerializer):
             tenant=tenant,
         )
         return user
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ['id', 'email', 'first_name', 'last_name', 'get_full_name', 'mobile', 'role', 'is_active', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class EmployeeCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ['email', 'first_name', 'last_name', 'mobile', 'role', 'is_active']
+
+    def create(self, validated_data):
+        tenant = self.context.get('tenant')
+        employee = Employee.objects.create(tenant=tenant, **validated_data)
+        return employee
 
 
 class LoginSerializer(serializers.Serializer):
