@@ -23,6 +23,22 @@ export default function SettingsPage() {
         address: data.tenant.address || '',
       });
     }).catch(() => {});
+
+    // Facebook SDK Initialization
+    const initFB = () => {
+      window.FB.init({
+        appId      : import.meta.env.VITE_META_APP_ID || '614698678376268',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v19.0'
+      });
+    };
+
+    if (window.FB) {
+      initFB();
+    } else {
+      window.fbAsyncInit = initFB;
+    }
   }, []);
 
   const setWa = (k, v) => setWaForm(f => ({ ...f, [k]: v }));
@@ -47,11 +63,28 @@ export default function SettingsPage() {
   };
 
   const handleFBLogin = () => {
-    toast.loading('Connecting to Meta Business...', { duration: 2000 });
-    setTimeout(() => {
-      toast.success('Facebook authentication simulated! (Real OAuth requires App ID/Secret)');
-      // In a real prod app, you'd use FB.login() or redirect to FB OAuth URL
-    }, 2000);
+    if (!window.FB) return toast.error('Facebook SDK not loaded. Try refreshing the page.');
+
+    window.FB.login((response) => {
+      if (response.authResponse) {
+        const accessToken = response.authResponse.accessToken;
+        const loadingToken = toast.loading('Connecting WhatsApp Business...');
+        
+        api.post('/whatsapp/oauth-callback/', { access_token: accessToken })
+          .then(({ data }) => {
+            toast.success('WhatsApp Cloud API successfully linked!', { id: loadingToken });
+            api.get('/whatsapp/configs/').then(({ data: cData }) => setWaConfigs(cData.results || cData));
+          })
+          .catch((err) => {
+            toast.error(err.response?.data?.error || 'Failed to link account via Meta.', { id: loadingToken });
+          });
+      } else {
+        toast.error('Facebook login was cancelled.');
+      }
+    }, {
+      scopes: ['whatsapp_business_management', 'whatsapp_business_messaging'],
+      extras: { setup: {} }
+    });
   };
 
   return (

@@ -186,6 +186,73 @@ def webhook(request):
     return Response({'status': 'ok'})
 
 
+@api_view(['POST'])
+def oauth_callback(request):
+    """Handle Meta Embedded Signup Callback Token Exchange"""
+    import httpx
+    access_token = request.data.get('access_token')
+    if not access_token:
+        return Response({'error': 'Missing access token'}, status=400)
+    
+    try:
+        # Attempt to exchange for a long-lived token if secret is configured
+        app_id = getattr(settings, 'META_APP_ID', None)
+        app_secret = getattr(settings, 'META_APP_SECRET', None)
+        
+        if app_id and app_secret and app_secret != 'your_app_secret_here':
+            exchange_url = "https://graph.facebook.com/v19.0/oauth/access_token"
+            exchange_resp = httpx.get(exchange_url, params={
+                'grant_type': 'fb_exchange_token',
+                'client_id': app_id,
+                'client_secret': app_secret,
+                'fb_exchange_token': access_token
+            }).json()
+            if 'access_token' in exchange_resp:
+                access_token = exchange_resp['access_token']
+
+        # Fetch the WABAs linked to this token
+        waba_response = httpx.get('https://graph.facebook.com/v19.0/me/businesses', 
+                                  params={'access_token': access_token}).json()
+        
+        # Depending on Meta scopes, we either query via businesses or direct WABA node
+        # We'll use a blanket approach or prompt user to configure manually if strictly required.
+        # Often `me/businesses` or `me/client_whatsapp_business_accounts` works.
+        wa_accounts = httpx.get('https://graph.facebook.com/v19.0/me/client_whatsapp_business_accounts', 
+                                  params={'access_token': access_token}).json()
+                                  
+        wabas = wa_accounts.get('data', [])
+        if not wabas:
+            return Response({'error': 'No WhatsApp Business Accounts found for this Meta user.'}, status=404)
+        
+        waba_id = wabas[-1].get('id')  # Grab the most recent one (newly created)
+        
+        # Fetch Phone Numbers for this WABA
+        phone_resp = httpx.get(f'https://graph.facebook.com/v19.0/{waba_id}/phone_numbers', 
+                               params={'access_token': access_token}).json()
+        
+        phones = phone_resp.get('data', [])
+        if not phones:
+            return Response({'error': 'No Phone Numbers linked to this WABA.'}, status=404)
+        
+        phone_number_id = phones[0].get('id')
+        display_name = phones[0].get('display_phone_number', 'WhatsApp Auto-Setup')
+        
+        # Save or update config
+        WhatsAppConfig.objects.update_or_create(
+            tenant=request.user.tenant,
+            defaults={
+                'display_name': display_name,
+                'phone_number_id': phone_number_id,
+                'wa_business_id': waba_id,
+                'access_token': access_token, 
+                'verify_token': getattr(settings, 'WHATSAPP_VERIFY_TOKEN', '')
+            }
+        )
+        return Response({'status': 'ok', 'waba_id': waba_id, 'phone_number_id': phone_number_id})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
 urlpatterns = [
     path('configs/', WAConfigListView.as_view()),
     path('templates/', TemplateListCreateView.as_view()),
@@ -194,4 +261,5 @@ urlpatterns = [
     path('conversations/<int:conversation_id>/messages/', MessageListView.as_view()),
     path('send/', send_message),
     path('webhook/', webhook),
+    path('oauth-callback/', oauth_callback),
 ]

@@ -13,6 +13,9 @@ COPY . .
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
+ARG VITE_META_APP_ID
+ENV VITE_META_APP_ID=$VITE_META_APP_ID
+
 # We use --ignore-scripts or run build, allowing it to pass even if tsc warns sometimes
 RUN npm run build || npx vite build
 
