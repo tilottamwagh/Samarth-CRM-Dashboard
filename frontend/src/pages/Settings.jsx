@@ -83,10 +83,8 @@ export default function SettingsPage() {
       }
     }, {
       scope: 'whatsapp_business_management,whatsapp_business_messaging',
-      extras: { 
-        feature: 'whatsapp_embedded_signup',
-        setup: {} 
-      }
+      auth_type: 'rerequest',
+      return_scopes: true
     });
   };
 
