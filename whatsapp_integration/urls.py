@@ -211,22 +211,39 @@ def oauth_callback(request):
                 access_token = exchange_resp['access_token']
 
         # Fetch the WABAs linked to this token
-        # We try the standard direct endpoint first, then fallback to the Tech Provider endpoint
-        waba_url = 'https://graph.facebook.com/v19.0/me/whatsapp_business_accounts'
-        wa_accounts = httpx.get(waba_url, params={'access_token': access_token}).json()
+        # We try three different ways to discover the WABA to ensure maximum compatibility
+        wabas = []
         
+        # 1. Direct discovery (Standard)
+        wa_accounts = httpx.get('https://graph.facebook.com/v19.0/me/whatsapp_business_accounts', 
+                                params={'access_token': access_token}).json()
         wabas = wa_accounts.get('data', [])
         
+        # 2. Business Manager discovery (Professional Standard)
         if not wabas:
-            # Fallback to Tech Provider/BSP endpoint
-            wa_accounts = httpx.get('https://graph.facebook.com/v19.0/me/client_whatsapp_business_accounts', 
+            b_resp = httpx.get('https://graph.facebook.com/v19.0/me/businesses', 
+                               params={'access_token': access_token}).json()
+            for buz in b_resp.get('data', []):
+                buz_id = buz.get('id')
+                b_wa_accounts = httpx.get(f'https://graph.facebook.com/v19.0/{buz_id}/whatsapp_business_accounts', 
+                                         params={'access_token': access_token}).json()
+                wabas.extend(b_wa_accounts.get('data', []))
+        
+        # 3. Tech Provider/BSP discovery (Legacy/Partner fallback)
+        if not wabas:
+            tp_accounts = httpx.get('https://graph.facebook.com/v19.0/me/client_whatsapp_business_accounts', 
                                      params={'access_token': access_token}).json()
-            wabas = wa_accounts.get('data', [])
+            wabas = tp_accounts.get('data', [])
 
         if not wabas:
-            return Response({'error': f'No WhatsApp Business Accounts found for this Meta user. (Debug: {json.dumps(wa_accounts)})'}, status=404)
+            debug_info = {
+                'me_accounts': wa_accounts,
+                'businesses': locals().get('b_resp', 'Not queried')
+            }
+            return Response({'error': f'No WhatsApp Business Accounts found for this Meta user. (Debug: {json.dumps(debug_info)})'}, status=404)
         
-        waba_id = wabas[-1].get('id')  # Grab the most recent one (newly created)
+        # We have atleast one WABA!
+        waba_id = wabas[0].get('id') 
         
         # Fetch Phone Numbers for this WABA
         phone_resp = httpx.get(f'https://graph.facebook.com/v19.0/{waba_id}/phone_numbers', 
