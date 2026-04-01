@@ -211,18 +211,20 @@ def oauth_callback(request):
                 access_token = exchange_resp['access_token']
 
         # Fetch the WABAs linked to this token
-        waba_response = httpx.get('https://graph.facebook.com/v19.0/me/businesses', 
-                                  params={'access_token': access_token}).json()
+        # We try the standard direct endpoint first, then fallback to the Tech Provider endpoint
+        waba_url = 'https://graph.facebook.com/v19.0/me/whatsapp_business_accounts'
+        wa_accounts = httpx.get(waba_url, params={'access_token': access_token}).json()
         
-        # Depending on Meta scopes, we either query via businesses or direct WABA node
-        # We'll use a blanket approach or prompt user to configure manually if strictly required.
-        # Often `me/businesses` or `me/client_whatsapp_business_accounts` works.
-        wa_accounts = httpx.get('https://graph.facebook.com/v19.0/me/client_whatsapp_business_accounts', 
-                                  params={'access_token': access_token}).json()
-                                  
         wabas = wa_accounts.get('data', [])
+        
         if not wabas:
-            return Response({'error': 'No WhatsApp Business Accounts found for this Meta user.'}, status=404)
+            # Fallback to Tech Provider/BSP endpoint
+            wa_accounts = httpx.get('https://graph.facebook.com/v19.0/me/client_whatsapp_business_accounts', 
+                                     params={'access_token': access_token}).json()
+            wabas = wa_accounts.get('data', [])
+
+        if not wabas:
+            return Response({'error': f'No WhatsApp Business Accounts found for this Meta user. (Debug: {json.dumps(wa_accounts)})'}, status=404)
         
         waba_id = wabas[-1].get('id')  # Grab the most recent one (newly created)
         
