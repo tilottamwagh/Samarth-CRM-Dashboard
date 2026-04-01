@@ -10,7 +10,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [waConfigs, setWaConfigs] = useState([]);
 
-  const WEBHOOK_URL = `${window.location.protocol}//${window.location.hostname.replace('5173', '8000')}/api/whatsapp/webhook/`;
+  const WEBHOOK_URL = `${(import.meta.env.VITE_API_URL || '').replace('/api', '')}/api/whatsapp/webhook/`;
 
   useEffect(() => {
     api.get('/whatsapp/configs/').then(({ data }) => setWaConfigs(data.results || data)).catch(() => {});
