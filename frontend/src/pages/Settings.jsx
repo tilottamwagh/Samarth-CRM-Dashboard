@@ -82,7 +82,7 @@ export default function SettingsPage() {
         toast.error('Facebook login was cancelled.');
       }
     }, {
-      scope: 'whatsapp_business_management,whatsapp_business_messaging',
+      scope: 'whatsapp_business_management,whatsapp_business_messaging,business_management',
       auth_type: 'rerequest',
       return_scopes: true
     });
