@@ -19,10 +19,12 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     const { data } = await api.post('/auth/login/', { email, password });
     localStorage.setItem('access_token', data.tokens.access);
     localStorage.setItem('refresh_token', data.tokens.refresh);
+    localStorage.setItem('login_time', Date.now().toString());
+    localStorage.setItem('remember_me', rememberMe ? 'true' : 'false');
     setUser(data.user);
     return data.user;
   };
@@ -31,6 +33,7 @@ export const AuthProvider = ({ children }) => {
     const { data } = await api.post('/auth/register/', userData);
     localStorage.setItem('access_token', data.tokens.access);
     localStorage.setItem('refresh_token', data.tokens.refresh);
+    localStorage.setItem('login_time', Date.now().toString());
     setUser(data.user);
     return data.user;
   };

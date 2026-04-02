@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
+import SessionTimeout from './components/SessionTimeout';
 
 // Pages
 import Login from './pages/Login';
@@ -75,6 +76,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
+        <SessionTimeout />
         <BrowserRouter>
           <Toaster
             position="top-right"

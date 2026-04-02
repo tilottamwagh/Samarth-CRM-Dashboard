@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 export default function Login() {
   const { login, user } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '', rememberMe: false });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      await login(form.email, form.password, form.rememberMe);
       toast.success('Welcome back!');
       navigate('/');
     } catch (err) {
@@ -122,6 +122,19 @@ export default function Login() {
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
+            </div>
+
+            <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: -8, marginBottom: 16 }}>
+              <input 
+                type="checkbox" 
+                id="rememberMe" 
+                checked={form.rememberMe}
+                onChange={e => setForm({ ...form, rememberMe: e.target.checked })}
+                style={{ cursor: 'pointer', width: 14, height: 14 }}
+              />
+              <label htmlFor="rememberMe" style={{ fontSize: 13, color: 'var(--text-muted)', cursor: 'pointer', userSelect: 'none' }}>
+                Remember me (30-min timeout disabled)
+              </label>
             </div>
 
             <button
