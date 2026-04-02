@@ -76,8 +76,8 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <SessionTimeout />
         <BrowserRouter>
+          <SessionTimeout />
           <Toaster
             position="top-right"
             toastOptions={{
