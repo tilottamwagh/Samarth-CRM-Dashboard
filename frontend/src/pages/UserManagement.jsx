@@ -23,9 +23,7 @@ export default function UserManagement() {
     setLoading(true);
     try {
       const { data } = await api.get('/leads/users/');
-      const allUsers = data.results || data;
-      // Filter out the current logged-in user
-      setUsers(allUsers.filter(u => u.id !== currentUser?.id));
+      setUsers(data.results || data);
     } catch { setUsers([]); }
     finally { setLoading(false); }
   };
@@ -54,9 +52,20 @@ export default function UserManagement() {
   const toggleActive = async (u) => {
     try {
       await api.patch(`/leads/users/${u.id}/`, { is_active: !u.is_active });
-      toast.success(`User ${u.is_active ? 'deactivated' : 'activated'}!`);
+      toast.success(`${u.first_name || u.email} ${u.is_active ? 'deactivated' : 'activated'}!`);
       fetchUsers();
     } catch { toast.error('Failed to update status'); }
+  };
+
+  const handleDelete = async (u) => {
+    if (!window.confirm(`Delete "${u.first_name} ${u.last_name || ''}" (${u.email})?\n\nThis action cannot be undone. Any leads assigned to this person will remain but will have their owner cleared.`)) return;
+    try {
+      await api.delete(`/leads/users/${u.id}/`);
+      toast.success(`${u.first_name || u.email} deleted successfully.`);
+      fetchUsers();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Failed to delete. Please try again.');
+    }
   };
 
   const filtered = users.filter(u =>
@@ -122,7 +131,7 @@ export default function UserManagement() {
           <div className="form-group">
             <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
               <input type="checkbox" checked={form.is_active} onChange={e => set('is_active', e.target.checked)} />
-              <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Active (user can log in)</span>
+              <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Active (visible and assignable)</span>
             </label>
           </div>
 
@@ -194,13 +203,16 @@ export default function UserManagement() {
                       </span>
                     </td>
                     <td style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                      {u.date_joined ? new Date(u.date_joined).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
+                      {u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button className="btn btn-ghost btn-icon btn-sm" onClick={() => handleEdit(u)} title="Edit"><Edit2 size={13} /></button>
                         <button className="btn btn-ghost btn-icon btn-sm" style={{ color: u.is_active ? 'var(--warning)' : 'var(--success)' }} onClick={() => toggleActive(u)} title={u.is_active ? 'Deactivate' : 'Activate'}>
                           {u.is_active ? <ShieldOff size={13} /> : <ShieldCheck size={13} />}
+                        </button>
+                        <button className="btn btn-ghost btn-icon btn-sm" style={{ color: 'var(--danger)' }} onClick={() => handleDelete(u)} title="Delete">
+                          <Trash2 size={13} />
                         </button>
                       </div>
                     </td>
