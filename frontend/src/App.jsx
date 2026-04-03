@@ -41,6 +41,7 @@ import ProductCatalog from './pages/ProductCatalog';
 import MyCopilots from './pages/MyCopilots';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import DataDeletion from './pages/DataDeletion';
 
 // Placeholder for not-yet-fully-built pages
 const Placeholder = ({ title, emoji = '🚧' }) => (
@@ -98,6 +99,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/data-deletion" element={<DataDeletion />} />
             <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
 
