@@ -39,6 +39,8 @@ import TeamSummary from './pages/TeamSummary';
 import LearningLibrary from './pages/LearningLibrary';
 import ProductCatalog from './pages/ProductCatalog';
 import MyCopilots from './pages/MyCopilots';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 // Placeholder for not-yet-fully-built pages
 const Placeholder = ({ title, emoji = '🚧' }) => (
@@ -94,6 +96,8 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
             <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
 
